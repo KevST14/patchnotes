@@ -62,3 +62,11 @@ def test_source_status_remembers_etag_across_failures(storage):
     assert status["last_error"] == "timeout"
     assert status["last_success"] is not None
     assert status["item_count"] == 20
+
+
+def test_undo_takes_back_a_hide(storage):
+    s = make_story(native_id="h", url="https://x/h")
+    storage.upsert_stories([s])
+    storage.record_interaction(s["id"], "hide")
+    assert storage.undo_last_interaction(s["id"]) == "hide"
+    assert s["id"] not in storage.story_actions()

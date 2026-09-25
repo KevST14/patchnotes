@@ -207,8 +207,9 @@ def record_interaction(story_id: str, action: str, ts: float | None = None) -> N
         )
 
 
-def undo_last_interaction(story_id: str, actions: tuple[str, ...] = ("keep", "skip", "save")) -> str | None:
-    """Remove the most recent triage decision on a story (catch-up's undo)."""
+def undo_last_interaction(story_id: str, actions: tuple[str, ...] = ("keep", "skip", "save", "hide")) -> str | None:
+    """Remove the most recent decision on a story (catch-up's undo, or
+    taking back a "not interested")."""
     with get_db() as conn:
         row = conn.execute(
             f"SELECT id, action FROM interactions WHERE story_id = ? AND action IN ({','.join('?' * len(actions))})"
