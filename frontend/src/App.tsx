@@ -17,6 +17,8 @@ import {
 import type { Status } from "./types";
 import { ago, editionVersion, isTypingTarget } from "./utils";
 import { CatchUpView } from "./views/CatchUpView";
+import { QuizView } from "./views/QuizView";
+import { SavedView } from "./views/SavedView";
 import { TodayView } from "./views/TodayView";
 import { TrendsView } from "./views/TrendsView";
 
@@ -24,6 +26,8 @@ const TAB_META: { id: Tab; label: string; key: string }[] = [
   { id: "today", label: "Today", key: "t" },
   { id: "catchup", label: "Catch up", key: "c" },
   { id: "trends", label: "Trends", key: "r" },
+  { id: "quiz", label: "Quiz", key: "q" },
+  { id: "saved", label: "Saved", key: "s" },
 ];
 
 export default function App() {
@@ -209,6 +213,8 @@ export default function App() {
         {tab === "today" && <TodayView status={status} catchupCount={catchupCount} onCatchupChanged={refreshCatchup} />}
         {tab === "catchup" && <CatchUpView onChanged={refreshCatchup} />}
         {tab === "trends" && <TrendsView lastUpdated={status?.last_updated ?? null} />}
+        {tab === "quiz" && <QuizView />}
+        {tab === "saved" && <SavedView />}
       </main>
 
       <ShortcutsDialog open={showShortcuts} onClose={() => setShowShortcuts(false)} />
