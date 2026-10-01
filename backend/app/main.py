@@ -17,6 +17,7 @@ from .topics import TOPICS_BY_ID, public_topics
 from .trends import WINDOWS
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
+logging.getLogger("httpx").setLevel(logging.WARNING)  # one line per feed request is noise
 log = logging.getLogger("api")
 
 scheduler = BackgroundScheduler()

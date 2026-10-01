@@ -172,7 +172,20 @@ def rising_terms(stories: list[dict], now: float, window: str = "24h", limit: in
                 candidates.pop(key)
                 break
 
-    ranked = sorted(candidates.values(), key=lambda c: c["score"], reverse=True)[:limit]
+    # "Paramount", "Warner Bros" and "Skydance" are often the same handful of
+    # stories. A term is dropped when its stories are (nearly) a subset of a
+    # stronger term's — but only if that term isn't much broader, so "OpenAI"
+    # survives even though every OpenAI story also says "AI".
+    ranked: list[dict] = []
+    kept_sets: list[frozenset] = []
+    for term in sorted(candidates.values(), key=lambda c: c["score"], reverse=True):
+        stories_key = frozenset(s["id"] for s in recent[term["key"]])
+        if any(stories_key <= kept and len(kept) <= 1.5 * len(stories_key) for kept in kept_sets):
+            continue
+        kept_sets.append(stories_key)
+        ranked.append(term)
+        if len(ranked) == limit:
+            break
     return {
         "window": window,
         "has_baseline": bool(spans),

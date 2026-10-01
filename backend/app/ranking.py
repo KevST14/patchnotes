@@ -158,24 +158,29 @@ def affinity(cluster: dict, profile: dict) -> tuple[float, list[str]]:
     term_part = sum(term_values) / len(term_values) if term_values else 0.0
 
     score = 0.9 * topic_part + 0.35 * source_part + 0.5 * term_part
+    # Reasons need a few signals behind them: one save shouldn't produce
+    # "you often keep AI stories".
+    counts = profile.get("counts", {})
     best_topic = max(topic_scores, key=lambda x: x[1], default=None)
     if best_topic and best_topic[0] in profile["followed"]:
         reasons.append(f"You follow {TOPICS_BY_ID[best_topic[0]]['label']}")
-    elif best_topic and best_topic[1] >= 0.25:
+    elif best_topic and best_topic[1] >= 0.25 and counts.get("topics", {}).get(best_topic[0], 0) >= 2:
         reasons.append(f"You often keep {TOPICS_BY_ID[best_topic[0]]['label']} stories")
     if source_part >= 0.3:
         best_source = max(cluster["sources"], key=lambda s: profile["sources"].get(s, 0.0))
-        reasons.append(f"You read a lot from {SOURCES_BY_ID[best_source]['short']}")
+        if counts.get("sources", {}).get(best_source, 0) >= 3:
+            reasons.append(f"You read a lot from {SOURCES_BY_ID[best_source]['short']}")
     if term_part >= 0.3:
         liked = max(lead.get("terms") or {}, key=lambda t: profile["terms"].get(t, 0.0))
-        reasons.append(f"Mentions {lead['terms'][liked]}, which you've liked before")
+        if counts.get("terms", {}).get(liked, 0) >= 2:
+            reasons.append(f"Mentions {lead['terms'][liked]}, which you've liked before")
     return max(-2.0, min(2.0, score)), reasons
 
 
 def popularity_reasons(cluster: dict) -> list[str]:
+    # Coverage already shows as "N sources" on every card, so it isn't
+    # repeated here; this is for signals the card doesn't otherwise show.
     reasons = []
-    if cluster["source_count"] >= 3:
-        reasons.append(f"Covered by {cluster['source_count']} sources")
     for d in cluster["discussions"]:
         if d["source"] == "hn" and (d["score"] or 0) >= 300:
             reasons.append(f"Big on Hacker News ({d['score']} points)")

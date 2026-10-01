@@ -89,3 +89,27 @@ def test_topic_volumes_report_change_against_baseline():
     assert volumes["security"]["count"] == 6
     assert len(volumes["security"]["spark"]) == WINDOWS["24h"]["buckets"]
     assert sum(volumes["security"]["spark"]) == 6
+
+
+def test_terms_covering_the_same_stories_collapse_to_one():
+    stories = _background() + [
+        make_story(source=src, native_id=f"m-{src}", url=f"https://{src}/m", title=title, published_at=NOW - h * HOUR)
+        for src, title, h in [
+            ("ars", "Paramount and Warner Bros become Skydance", 2),
+            ("verge", "Skydance: the new Paramount and Warner Bros", 3),
+            ("register", "Paramount, Warner Bros now Skydance", 5),
+        ]
+    ]
+    labels = [t["label"] for t in rising_terms(stories, NOW, "24h")["terms"]]
+    assert sum(1 for l in labels if l in ("Skydance", "Paramount", "Warner Bros", "Warner")) == 1
+
+
+def test_a_narrow_name_survives_inside_a_broad_one():
+    # Every OpenAI story mentions AI, but "AI" is far broader — keep both.
+    stories = _background()
+    openai = ["OpenAI ships AI agents", "OpenAI hires an AI safety lead", "AI rules target OpenAI", "OpenAI loses AI lawsuit"]
+    for i, src in enumerate(["ars", "verge", "register"] * 4):
+        title = openai[i] if i < 4 else f"Some AI startup raises money {i}"
+        stories.append(make_story(source=src, native_id=f"o{i}", url=f"https://{src}/o{i}", title=title, published_at=NOW - (i + 1) * HOUR))
+    labels = [t["label"] for t in rising_terms(stories, NOW, "24h")["terms"]]
+    assert "OpenAI" in labels and "AI" in labels
