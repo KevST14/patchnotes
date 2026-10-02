@@ -20,6 +20,6 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 # Origin allowed to call the API (the Vite dev server, or a deployed frontend).
 FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:5173")
 
-USER_AGENT = "PatchNotes/0.1 (personal news reader; +https://github.com/)"
+USER_AGENT = "PatchNotes/0.1 (personal news reader; +https://github.com/KevST14/patchnotes)"
 
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)

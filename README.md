@@ -94,6 +94,11 @@ A few decisions worth knowing about:
 
 ## Setup
 
+```bash
+git clone https://github.com/KevST14/patchnotes.git
+cd patchnotes
+```
+
 ### Backend
 
 ```bash
