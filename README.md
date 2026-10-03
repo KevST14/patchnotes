@@ -1,5 +1,15 @@
 # Patch Notes
 
+[![Tests](https://github.com/KevST14/patchnotes/actions/workflows/tests.yml/badge.svg)](https://github.com/KevST14/patchnotes/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/github/license/KevST14/patchnotes)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Last commit](https://img.shields.io/github/last-commit/KevST14/patchnotes)
+
 Patch notes for the tech world. A personal news dashboard that pulls the day's
 tech stories from Hacker News, Lobsters, GitHub and a dozen outlets, groups
 coverage of the same story together, learns what you actually care about, spots
